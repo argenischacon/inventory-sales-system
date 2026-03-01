@@ -164,7 +164,6 @@ public class AuthIntegrationTest {
         }
 
         @Test
-        @Disabled("Disabled until Categories feature is merged")
         void accessProtectedEndpoint_WithoutToken_Returns401() throws Exception {
                 mockMvc.perform(post("/api/v1/categories"))
                                 .andExpect(status().isUnauthorized());
@@ -173,7 +172,6 @@ public class AuthIntegrationTest {
         // ── Role-based access tests ───────────────────────────────────────────────
 
         @Test
-        @Disabled("Disabled until Categories feature is merged")
         void roleUser_CanRead_ButCannotWrite() throws Exception {
                 String userToken = getTokenForUser("regularuser", "password123", Set.of(Role.USER));
 
@@ -191,7 +189,6 @@ public class AuthIntegrationTest {
         }
 
         @Test
-        @Disabled("Disabled until Categories feature is merged")
         void roleAdmin_HasFullAccess() throws Exception {
                 String adminToken = getTokenForUser("adminuser", "password123", Set.of(Role.ADMIN));
 
