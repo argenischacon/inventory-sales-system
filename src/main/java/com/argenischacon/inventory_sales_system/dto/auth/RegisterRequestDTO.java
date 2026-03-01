@@ -1,5 +1,6 @@
 package com.argenischacon.inventory_sales_system.dto.auth;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -13,5 +14,9 @@ public record RegisterRequestDTO(
 
         @NotBlank(message = "Password is mandatory")
         @Size(min = 6, max = 100, message = "Password must be between 6 and 100 characters")
-        String password
+        String password,
+
+        @NotBlank(message = "Email is mandatory")
+        @Email(message = "Email should be valid")
+        String email
 ) {}
