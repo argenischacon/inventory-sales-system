@@ -8,9 +8,9 @@ import java.util.Optional;
 
 @Repository
 public interface SupplierRepository extends JpaRepository<Supplier, Long> {
-    boolean existsByName(String name);
+    boolean existsByTaxId(String taxId);
 
-    boolean existsByNameAndIdNot(String name, Long id);
+    boolean existsByTaxIdAndIdNot(String taxId, Long id);
 
     Optional<Supplier> findByName(String name);
 }
