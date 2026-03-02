@@ -44,7 +44,14 @@ public class JwtUtils {
     public boolean isTokenValid(String token, UserDetails userDetails) {
         try {
             String username = extractUsername(token);
-            return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+            boolean isValidUsername = username.equals(userDetails.getUsername());
+            
+            if (!isValidUsername) {
+                logger.warn("JWT Validation Failed: Username mismatch. Token: '{}', UserDetails: '{}'", username, userDetails.getUsername());
+                return false;
+            }
+            
+            return !isTokenExpired(token);
         } catch (JwtException | IllegalArgumentException e) {
             logger.error("Invalid JWT token: {}", e.getMessage());
             return false;
