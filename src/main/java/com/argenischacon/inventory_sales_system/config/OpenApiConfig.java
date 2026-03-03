@@ -16,10 +16,7 @@ import org.springframework.context.annotation.Configuration;
                 version = "1.0",
                 description = "Complete RESTful API for inventory and sales management. Provides endpoints for managing products, categories, suppliers, customers, and tracking sales transactions.",
                 contact = @Contact(name = "Argenis Chacon")
-        ),
-        security = {
-                @SecurityRequirement(name = "bearerAuth")
-        }
+        )
 )
 @SecurityScheme(
         name = "bearerAuth",

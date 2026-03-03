@@ -15,12 +15,14 @@ import org.springdoc.core.annotations.ParameterObject;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/v1/customers")
 @RequiredArgsConstructor
 @Tag(name = "Customers", description = "Endpoints for managing customers")
+@SecurityRequirement(name = "bearerAuth")
 public class CustomerController {
 
     private final CustomerService customerService;

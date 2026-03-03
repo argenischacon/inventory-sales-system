@@ -15,12 +15,14 @@ import org.springdoc.core.annotations.ParameterObject;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/v1/sales")
 @RequiredArgsConstructor
 @Tag(name = "Sales", description = "Endpoints for managing sales transactions")
+@SecurityRequirement(name = "bearerAuth")
 public class SaleController {
 
     private final SaleService saleService;
