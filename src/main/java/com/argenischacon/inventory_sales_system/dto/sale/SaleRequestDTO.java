@@ -11,7 +11,12 @@ import lombok.Builder;
 @Builder
 @Schema(description = "Request payload for creating a new sale transaction")
 public record SaleRequestDTO(
-                @Schema(description = "ID of the customer making the purchase", example = "1") @NotNull(message = "Customer ID is mandatory") Long customerId,
+        @Schema(description = "ID of the customer making the purchase", example = "1")
+        @NotNull(message = "Customer ID is mandatory")
+        Long customerId,
 
-                @Schema(description = "List of products being purchased") @NotEmpty(message = "Sale details cannot be empty") @Valid List<SaleDetailRequestDTO> saleDetails) {
+        @Schema(description = "List of products being purchased")
+        @NotEmpty(message = "Sale details cannot be empty")
+        @Valid
+        List<SaleDetailRequestDTO> saleDetails) {
 }

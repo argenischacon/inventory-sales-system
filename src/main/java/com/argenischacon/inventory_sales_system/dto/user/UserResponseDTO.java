@@ -9,11 +9,15 @@ import lombok.Builder;
 @Builder
 @Schema(description = "Response payload representing user details")
 public record UserResponseDTO(
-                @Schema(description = "Unique identifier of the user", example = "1") Long id,
+        @Schema(description = "Unique identifier of the user", example = "1")
+        Long id,
 
-                @Schema(description = "Username of the user", example = "admin_user") String username,
+        @Schema(description = "Username of the user", example = "admin_user")
+        String username,
 
-                @Schema(description = "Email address of the user", example = "admin@example.com") String email,
+        @Schema(description = "Email address of the user", example = "admin@example.com")
+        String email,
 
-                @Schema(description = "Set of roles assigned to the user") Set<Role> roles) {
+        @Schema(description = "Set of roles assigned to the user")
+        Set<Role> roles) {
 }

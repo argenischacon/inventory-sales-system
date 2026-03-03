@@ -9,13 +9,18 @@ import lombok.Builder;
 @Builder
 @Schema(description = "Response payload representing a line item in a sale")
 public record SaleDetailResponseDTO(
-                @Schema(description = "Unique identifier of the sale detail", example = "1") Long id,
+        @Schema(description = "Unique identifier of the sale detail", example = "1")
+        Long id,
 
-                @Schema(description = "Quantity of the product sold", example = "2") Integer quantity,
+        @Schema(description = "Quantity of the product sold", example = "2")
+        Integer quantity,
 
-                @Schema(description = "Unit price at the time of sale", example = "999.99") BigDecimal unitPrice,
+        @Schema(description = "Unit price at the time of sale", example = "999.99")
+        BigDecimal unitPrice,
 
-                @Schema(description = "Subtotal for this line item", example = "1999.98") BigDecimal subTotal,
+        @Schema(description = "Subtotal for this line item", example = "1999.98")
+        BigDecimal subTotal,
 
-                @Schema(description = "Product details") ProductNestedDTO product) {
+        @Schema(description = "Product details")
+        ProductNestedDTO product) {
 }
