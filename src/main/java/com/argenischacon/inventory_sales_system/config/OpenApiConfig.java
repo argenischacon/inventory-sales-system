@@ -10,9 +10,24 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@OpenAPIDefinition(info = @Info(title = "Inventory & Sales API", version = "1.0", description = "Complete RESTful API for inventory and sales management. Provides endpoints for managing products, categories, suppliers, customers, and tracking sales transactions.", contact = @Contact(name = "Argenis Chacon")), security = {
+@OpenAPIDefinition(
+        info = @Info(
+                title = "Inventory & Sales API",
+                version = "1.0",
+                description = "Complete RESTful API for inventory and sales management. Provides endpoints for managing products, categories, suppliers, customers, and tracking sales transactions.",
+                contact = @Contact(name = "Argenis Chacon")
+        ),
+        security = {
                 @SecurityRequirement(name = "bearerAuth")
-})
-@SecurityScheme(name = "bearerAuth", description = "JWT authentication required for securing the API endpoints. Provide only the raw JWT token below (evaluates as 'Bearer <token>').", scheme = "bearer", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", in = SecuritySchemeIn.HEADER)
+        }
+)
+@SecurityScheme(
+        name = "bearerAuth",
+        description = "JWT authentication required for securing the API endpoints. Provide only the raw JWT token below (evaluates as 'Bearer <token>').",
+        scheme = "bearer",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        in = SecuritySchemeIn.HEADER
+)
 public class OpenApiConfig {
 }
