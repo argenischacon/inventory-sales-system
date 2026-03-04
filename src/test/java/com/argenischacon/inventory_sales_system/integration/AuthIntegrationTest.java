@@ -53,6 +53,10 @@ public class AuthIntegrationTest {
 
         // ── Helpers ───────────────────────────────────────────────────────────────
 
+        private String getTokenForAdmin() {
+                return getTokenForUser("superadmin", "adminpass", Set.of(Role.ADMIN));
+        }
+
         private String getTokenForUser(String username, String password, Set<Role> roles) {
                 User user = new User();
                 user.setUsername(username);
@@ -78,9 +82,11 @@ public class AuthIntegrationTest {
 
         @Test
         void register_Success() throws Exception {
+                String adminToken = getTokenForAdmin();
                 RegisterRequestDTO requestDTO = new RegisterRequestDTO("newuser", "password123", "newuser@test.com");
 
                 mockMvc.perform(post("/api/v1/auth/register")
+                                .header("Authorization", "Bearer " + adminToken)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(requestDTO)))
                                 .andExpect(status().isCreated())
@@ -88,13 +94,16 @@ public class AuthIntegrationTest {
                                 .andExpect(jsonPath("$.username").value("newuser"))
                                 .andExpect(jsonPath("$.tokenType").value("Bearer"));
 
-                assertEquals(1, userRepository.count());
+                // One admin + one new user = 2
+                assertEquals(2, userRepository.count());
         }
 
         @Test
         void register_ConflictWhenUsernameExists() throws Exception {
+                String adminToken = getTokenForAdmin();
                 RegisterRequestDTO first = new RegisterRequestDTO("existinguser", "password123", "existing@test.com");
                 mockMvc.perform(post("/api/v1/auth/register")
+                                .header("Authorization", "Bearer " + adminToken)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(first)))
                                 .andExpect(status().isCreated());
@@ -102,6 +111,7 @@ public class AuthIntegrationTest {
                 RegisterRequestDTO duplicate = new RegisterRequestDTO("existinguser", "otherpass",
                                 "duplicate@test.com");
                 mockMvc.perform(post("/api/v1/auth/register")
+                                .header("Authorization", "Bearer " + adminToken)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(duplicate)))
                                 .andExpect(status().isConflict());
@@ -109,14 +119,17 @@ public class AuthIntegrationTest {
 
         @Test
         void register_ConflictWhenEmailExists() throws Exception {
+                String adminToken = getTokenForAdmin();
                 RegisterRequestDTO first = new RegisterRequestDTO("user1", "password123", "duplicateEmail@test.com");
                 mockMvc.perform(post("/api/v1/auth/register")
+                                .header("Authorization", "Bearer " + adminToken)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(first)))
                                 .andExpect(status().isCreated());
 
                 RegisterRequestDTO duplicate = new RegisterRequestDTO("user2", "otherpass", "duplicateEmail@test.com");
                 mockMvc.perform(post("/api/v1/auth/register")
+                                .header("Authorization", "Bearer " + adminToken)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(duplicate)))
                                 .andExpect(status().isConflict());
@@ -124,18 +137,44 @@ public class AuthIntegrationTest {
 
         @Test
         void register_ValidationError_WhenUsernameBlank() throws Exception {
+                String adminToken = getTokenForAdmin();
                 RegisterRequestDTO requestDTO = new RegisterRequestDTO("", "password123", "blank@test.com");
 
                 mockMvc.perform(post("/api/v1/auth/register")
+                                .header("Authorization", "Bearer " + adminToken)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(requestDTO)))
                                 .andExpect(status().isBadRequest());
         }
 
         @Test
+        void register_Forbidden_WhenAnonymous() throws Exception {
+                RegisterRequestDTO requestDTO = new RegisterRequestDTO("anonuser", "password123", "anon@test.com");
+
+                mockMvc.perform(post("/api/v1/auth/register")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(requestDTO)))
+                                .andExpect(status().isUnauthorized());
+        }
+
+        @Test
+        void register_Forbidden_WhenRoleUser() throws Exception {
+                String userToken = getTokenForUser("regularuser", "password123", Set.of(Role.USER));
+                RegisterRequestDTO requestDTO = new RegisterRequestDTO("newuser", "password123", "newuser@test.com");
+
+                mockMvc.perform(post("/api/v1/auth/register")
+                                .header("Authorization", "Bearer " + userToken)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(requestDTO)))
+                                .andExpect(status().isForbidden());
+        }
+
+        @Test
         void login_Success() throws Exception {
+                String adminToken = getTokenForAdmin();
                 RegisterRequestDTO register = new RegisterRequestDTO("loginuser", "password123", "loginuser@test.com");
                 mockMvc.perform(post("/api/v1/auth/register")
+                                .header("Authorization", "Bearer " + adminToken)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(register)))
                                 .andExpect(status().isCreated());
@@ -151,9 +190,11 @@ public class AuthIntegrationTest {
 
         @Test
         void login_Unauthorized_WhenWrongPassword() throws Exception {
+                String adminToken = getTokenForAdmin();
                 RegisterRequestDTO register = new RegisterRequestDTO("badpassuser", "password123",
                                 "badpassuser@test.com");
                 mockMvc.perform(post("/api/v1/auth/register")
+                                .header("Authorization", "Bearer " + adminToken)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(register)))
                                 .andExpect(status().isCreated());

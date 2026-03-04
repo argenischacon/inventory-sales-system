@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -25,11 +26,14 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @Operation(summary = "Register a new user", description = "Creates a new user account in the system.")
+    @Operation(summary = "Register a new user", description = "Creates a new user account in the system. Requires ADMIN role.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User successfully registered"),
-            @ApiResponse(responseCode = "400", description = "Invalid request payload or user already exists")
+            @ApiResponse(responseCode = "400", description = "Invalid request payload or user already exists"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - Valid JWT token missing"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - Requires ADMIN role")
     })
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDTO> register(@Valid @RequestBody RegisterRequestDTO requestDTO) {
         return new ResponseEntity<>(authService.register(requestDTO), HttpStatus.CREATED);

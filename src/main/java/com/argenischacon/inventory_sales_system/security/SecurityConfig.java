@@ -42,7 +42,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll()
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").hasRole("ADMIN")
                             .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll();
 
                     if (Arrays.asList(env.getActiveProfiles()).contains("dev")) {
